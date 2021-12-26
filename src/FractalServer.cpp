@@ -24,7 +24,7 @@ using traits_t = restinio::single_thread_tls_traits_t<restinio::asio_timer_manag
 				restinio::single_threaded_ostream_logger_t,	router_t>;
 
 using serverInstance = restinio::http_server_t<traits_t>;
-serverInstance server = NULL;
+std::optional<serverInstance> server{std::nullopt};
 
 auto server_handler(){
 	auto router = std::make_unique<router_t>();
@@ -75,8 +75,8 @@ void start(std::string privateKey, std::string serverKey, std::string pemKey){
 		);
  */
 		
-		serverInstance server{
-			restinio::own_io_context(), [&tls_context](auto & settings){
+		server.emplace(restinio::own_io_context(),
+			[&tls_context](auto & settings){
 					settings.address("localhost");
 					settings.port(443);
 					settings.request_handler(server_handler());
@@ -85,17 +85,18 @@ void start(std::string privateKey, std::string serverKey, std::string pemKey){
 					settings.handle_request_timeout(20s);
 					settings.tls_context(std::move(tls_context));
 			}
-		};
+		);
 
-		std::thread restinio_control_thread{ [&server]
-			{
+		std::thread restinio_control_thread{[serverLocal = &server.value()]{
 				// Use restinio::run to launch RESTinio's server.
 				// This run() will return only if server stopped from
 				// some other thread.
-				restinio::run( restinio::on_thread_pool(
+				restinio::run(
+					restinio::on_thread_pool(
 							1, // Count of worker threads for RESTinio.
 							restinio::skip_break_signal_handling(), // Don't react to Ctrl+C.
-							server) // Server to be run.
+							serverLocal
+					) // Server to be run.
 				);
 			}
 		};
@@ -136,7 +137,7 @@ FREObject startServer(FREContext ctx, void* funcData, uint32_t argc, FREObject a
 
 FREObject stopServer(FREContext ctx, void* funcData, uint32_t argc, FREObject argv[])
 {
-	restinio::initiate_shutdown(server);
+	restinio::initiate_shutdown(server.value());
 	//restinio_control_thread.join();
 	return NULL;
 }

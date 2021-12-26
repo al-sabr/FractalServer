@@ -3,8 +3,10 @@
 #include "cross-platform.h"
 #include "FlashRuntimeExtensions.h"
 
-#include <iostream>
 #include <string>
+#include <functional>
+#include <iostream>
+#include <optional>
 
 #include <restinio/all.hpp>
 #include <restinio/tls.hpp>
