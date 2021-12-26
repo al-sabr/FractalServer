@@ -4,7 +4,7 @@ project(FractalServer VERSION 0.1
              DESCRIPTION "Adobe Native Extension which allows the creation of an HTTPS server."
              HOMEPAGE_URL "https://github.com/al-sabr/FractalServer")
 
-SET(CMAKE_CXX_STANDARD 14)
+SET(CMAKE_CXX_STANDARD 17)
 SET(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 set(OPENSSL_USE_STATIC_LIBS TRUE CACHE STRING "OpenSSL use mode")
