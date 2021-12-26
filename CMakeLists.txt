@@ -22,11 +22,14 @@ find_package(flash-runtime-extensions CONFIG REQUIRED)
 
 set(HEADER_FILES
   include/dllMain.h
+  include/includes.h
   include/cross-platform.h
+  include/FractalServer.h
 )
 
 set(SRC_FILES
   src/dllMain.cpp
+  src/FractalServer.cpp
 )
 
 if(WIN32)

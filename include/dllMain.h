@@ -1,14 +1,4 @@
-#pragma once
-
-#include "cross-platform.h"
-#include "FlashRuntimeExtensions.h"
-
-#include <iostream>
-
-#include <restinio/all.hpp>
-#include <restinio/tls.hpp>
-
-
+#include "includes.h"
 
 extern "C"
 {
